@@ -1,46 +1,44 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import UserManager from './usermanager.js'
 
 const app = express()
 const port = 3000
 
-const users = []
-
-const userScoreMap = new Map()
+const users = new UserManager()
 
 const challengeAnswers = process.env.ANSWERS.split(';')
 
-const checkUser = (user) => {
-    if (users.includes(user))
-        return true
-    users.push(user)
-    userScoreMap.set(user, new Set())
-    return false
-}
+const isAuthed = (req) => req.cookies != undefined && req.cookies['auth'] != undefined
 
 app.use(express.json());
 app.use(cookieParser())
 
 app.get('/api/challengesCompleted', (req, res) => {
-    if (req.cookies == undefined || req.cookies['auth'] == undefined) {
+    if (!isAuthed(req)) {
         res.status(401)
         res.end()
         return
     }
-    checkUser(req.cookies['auth'])
     res.status(200)
-    res.end(JSON.stringify(Array.from(userScoreMap.get(req.cookies['auth']))))
+    res.end(JSON.stringify(users.getCompleted(req.cookies['auth'])))
 })
 
 app.post('/api/check/:id', (req, res) => {
+    if (!isAuthed(req)) {
+        res.status(401)
+        res.end()
+        return
+    }
+
     if (req.params.id > challengeAnswers.length) {
         res.status(400)
         res.end()
     }
+
     res.status(200)
     if (req.body.answer === challengeAnswers[req.params.id]) {
-        checkUser(req.cookies['auth'])
-        userScoreMap.get(req.cookies['auth']).add(req.params.id)
+        users.addCompleted(req.cookies['auth'], req.params.id)
         res.end(JSON.stringify({value: true}))
         return
     }
