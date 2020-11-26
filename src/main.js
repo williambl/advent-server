@@ -14,7 +14,7 @@ const checkUser = (user) => {
     if (users.includes(user))
         return true
     users.push(user)
-    userScoreMap.set(user, [])
+    userScoreMap.set(user, new Set())
     return false
 }
 
@@ -29,7 +29,7 @@ app.get('/api/challengesCompleted', (req, res) => {
     }
     checkUser(req.cookies['auth'])
     res.status = 200
-    res.end(JSON.stringify(userScoreMap.get(req.cookies['auth'])))
+    res.end(JSON.stringify(Array.from(userScoreMap.get(req.cookies['auth']))))
 })
 
 app.post('/api/check/:id', (req, res) => {
@@ -40,7 +40,7 @@ app.post('/api/check/:id', (req, res) => {
     res.status = 200
     if (req.body.answer === challengeAnswers[req.params.id]) {
         checkUser(req.cookies['auth'])
-        userScoreMap.get(req.cookies['auth']).push(req.params.id)
+        userScoreMap.get(req.cookies['auth']).add(req.params.id)
         res.end(JSON.stringify({value: true}))
         return
     }
