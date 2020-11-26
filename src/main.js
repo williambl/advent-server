@@ -8,6 +8,8 @@ const users = []
 
 const userScoreMap = new Map()
 
+const challengeAnswers = process.env.ANSWERS.split(';')
+
 const checkUser = (user) => {
     if (users.includes(user))
         return true
@@ -16,6 +18,7 @@ const checkUser = (user) => {
     return false
 }
 
+app.use(express.json());
 app.use(cookieParser())
 
 app.get('/api/challengesCompleted', (req, res) => {
@@ -27,6 +30,21 @@ app.get('/api/challengesCompleted', (req, res) => {
     checkUser(req.cookies['auth'])
     res.status = 200
     res.end(JSON.stringify(userScoreMap.get(req.cookies['auth'])))
+})
+
+app.post('/api/check/:id', (req, res) => {
+    if (req.params.id > challengeAnswers.length) {
+        res.status = 400
+        res.end()
+    }
+    res.status = 200
+    if (req.body.answer === challengeAnswers[req.params.id]) {
+        checkUser(req.cookies['auth'])
+        userScoreMap.get(req.cookies['auth']).push(req.params.id)
+        res.end(JSON.stringify({value: true}))
+        return
+    }
+    res.end(JSON.stringify({value: false}))
 })
 
 app.listen(port, () => {
