@@ -1,11 +1,12 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import fs from 'fs'
 import UserManager from './usermanager.js'
 
 const app = express()
 const port = 3000
 
-const users = new UserManager()
+const users = fs.existsSync("./data.json") ? new UserManager(JSON.parse(fs.readFileSync("./data.json"))) : new UserManager()
 
 const challengeAnswers = process.env.ANSWERS.split(';')
 
