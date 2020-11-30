@@ -14,6 +14,7 @@ const isAuthed = (req) => req.cookies != undefined && req.cookies['auth'] != und
 
 app.use(express.json());
 app.use(cookieParser())
+app.use(express.static('./client'))
 
 app.get('/api/challengesCompleted', (req, res) => {
     if (!isAuthed(req)) {
@@ -44,6 +45,10 @@ app.post('/api/check/:id', (req, res) => {
         return
     }
     res.end(JSON.stringify({value: false}))
+})
+
+app.get('*', (req, res) => {
+    res.sendFile('./client/index.html')
 })
 
 app.listen(port, () => {
