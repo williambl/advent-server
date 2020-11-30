@@ -1,10 +1,11 @@
 import express from 'express'
+import compression from 'compression'
 import cookieParser from 'cookie-parser'
 import fs from 'fs'
 import UserManager from './usermanager.js'
 
 const app = express()
-const port = 3000
+const port = 413
 
 const users = fs.existsSync("./data.json") ? new UserManager(JSON.parse(fs.readFileSync("./data.json"))) : new UserManager()
 
@@ -15,6 +16,7 @@ const isAuthed = (req) => req.cookies != undefined && req.cookies['auth'] != und
 app.use(express.json());
 app.use(cookieParser())
 app.use(express.static('./client'))
+app.use(compression())
 
 app.get('/api/challengesCompleted', (req, res) => {
     if (!isAuthed(req)) {
