@@ -5,7 +5,7 @@ import fs from 'fs'
 import UserManager from './usermanager.js'
 
 const app = express()
-const port = 413
+const port = process.env.PORT || 3000
 
 const users = fs.existsSync("./data.json") ? new UserManager(JSON.parse(fs.readFileSync("./data.json"))) : new UserManager()
 
