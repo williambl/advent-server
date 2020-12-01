@@ -44,7 +44,7 @@ app.post('/api/check/:id', (req, res) => {
 
     res.status(200)
     if (req.body.answer === challengeAnswers[req.params.id]) {
-        users.addCompleted(req.header("X-Auth"), req.params.id)
+        users.addCompleted(req.header("X-Auth"), parseInt(req.params.id))
         res.end(JSON.stringify({value: true}))
         return
     }
