@@ -10,7 +10,6 @@
     "express": "^4.17.1"
   },
   "scripts": {
-      "build": "git clone https://github.com/williambl/advent.git && cd advent && yarn install && yarn build && mv build ../client && cd .. && rm -rf advent",
     "start": "node src/main.js"
   }
 }

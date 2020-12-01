@@ -49,10 +49,6 @@ app.post('/api/check/:id', (req, res) => {
     res.end(JSON.stringify({value: false}))
 })
 
-app.get('*', (req, res) => {
-    res.sendFile('../client/index.html', { root: __dirname })
-})
-
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
