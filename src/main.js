@@ -1,12 +1,14 @@
 import express from 'express'
 import compression from 'compression'
-import fs from 'fs'
+import { downloadData } from './aws.js'
 import UserManager from './usermanager.js'
 
 const app = express()
 const port = process.env.PORT || 3000
 
-const users = fs.existsSync("./data.json") ? new UserManager(JSON.parse(fs.readFileSync("./data.json"))) : new UserManager()
+var users = undefined
+
+downloadData((err, data) => users = err ? new UserManager() : new UserManager(JSON.parse(data)))
 
 const challengeAnswers = process.env.ANSWERS.split(';')
 

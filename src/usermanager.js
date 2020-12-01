@@ -1,4 +1,4 @@
-import fs from 'fs'
+import {uploadData} from './aws.js'
 
 export default class UserManager {
     constructor(json) {
@@ -44,14 +44,11 @@ export default class UserManager {
             }
         }
 
-        fs.writeFile(
-            "./data.json",
+        uploadData(
             JSON.stringify({
                 users: this.users,
                 userToScore: Array.from(this.userToScore.entries(), mapEntryToObject)
-            }),
-            (err) =>
-            console.log(err ? err : "written user data to data.json.")
+            })
         )
     }
 }
