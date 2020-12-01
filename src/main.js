@@ -15,7 +15,7 @@ const isAuthed = (req) => req.header("X-Auth") != undefined
 app.use(express.json());
 app.use((_, res, next) => {
     res.header("Access-Control-Allow-Origin", "https://advent.artemisvioletta.co.uk")
-    res.header("Access-Control-Allow-Headers", "X-Auth")
+    res.header("Access-Control-Allow-Headers", "X-Auth, Content-Type")
     next()
 })
 app.use(compression())
