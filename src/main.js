@@ -1,6 +1,5 @@
 import express from 'express'
 import compression from 'compression'
-import cookieParser from 'cookie-parser'
 import fs from 'fs'
 import UserManager from './usermanager.js'
 
@@ -11,13 +10,12 @@ const users = fs.existsSync("./data.json") ? new UserManager(JSON.parse(fs.readF
 
 const challengeAnswers = process.env.ANSWERS.split(';')
 
-const isAuthed = (req) => req.cookies != undefined && req.cookies['auth'] != undefined
+const isAuthed = (req) => req.header("X-Auth") != undefined
 
 app.use(express.json());
-app.use(cookieParser())
 app.use((_, res, next) => {
     res.header("Access-Control-Allow-Origin", "https://advent.artemisvioletta.co.uk")
-    res.header("Access-Control-Allow-Credentials", "true")
+    res.header("Access-Control-Allow-Headers", "X-Auth")
     next()
 })
 app.use(compression())
@@ -29,7 +27,7 @@ app.get('/api/challengesCompleted', (req, res) => {
         return
     }
     res.status(200)
-    res.end(JSON.stringify(users.getCompleted(req.cookies['auth'])))
+    res.end(JSON.stringify(users.getCompleted(req.header("X-Auth"))))
 })
 
 app.post('/api/check/:id', (req, res) => {
@@ -46,7 +44,7 @@ app.post('/api/check/:id', (req, res) => {
 
     res.status(200)
     if (req.body.answer === challengeAnswers[req.params.id]) {
-        users.addCompleted(req.cookies['auth'], req.params.id)
+        users.addCompleted(req.header("X-Auth"), req.params.id)
         res.end(JSON.stringify({value: true}))
         return
     }
