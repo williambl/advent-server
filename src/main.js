@@ -50,7 +50,7 @@ app.post('/api/check/:id', (req, res) => {
 })
 
 app.get('*', (req, res) => {
-    res.sendFile('./client/index.html')
+    res.sendFile('../client/index.html', { root: __dirname })
 })
 
 app.listen(port, () => {
