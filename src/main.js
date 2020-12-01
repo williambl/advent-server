@@ -15,7 +15,10 @@ const isAuthed = (req) => req.cookies != undefined && req.cookies['auth'] != und
 
 app.use(express.json());
 app.use(cookieParser())
-app.use(express.static('./client'))
+app.use((_, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://advent.artemisvioletta.co.uk")
+    next()
+})
 app.use(compression())
 
 app.get('/api/challengesCompleted', (req, res) => {
