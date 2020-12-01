@@ -17,6 +17,7 @@ app.use(express.json());
 app.use(cookieParser())
 app.use((_, res, next) => {
     res.header("Access-Control-Allow-Origin", "https://advent.artemisvioletta.co.uk")
+    res.header("Access-Control-Allow-Credentials", "true")
     next()
 })
 app.use(compression())
