@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000
 
 var users = undefined
 
-downloadData((err, data) => users = err ? new UserManager() : new UserManager(JSON.parse(data)))
+downloadData((err, data) => users = err ? new UserManager() : new UserManager(JSON.parse(data.toString('utf8'))))
 
 const challengeAnswers = process.env.ANSWERS.split(';')
 
